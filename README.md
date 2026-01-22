@@ -5,8 +5,10 @@ A full-stack document extraction application that uses AI to extract structured 
 ## 🚀 Features
 
 - **AI-Powered Extraction**: Uses GPT-4o Vision with Gemini fallback for 95%+ accuracy
+- **Supported Formats**: PNG, JPG, WEBP, PDF invoice images
 - **Real-time Progress**: SSE streaming shows actual backend processing steps
 - **Edit Before Save**: Inline editing with auto-recalculation of totals
+- **SalesOrder Display**: View SalesOrderHeader with expandable SalesOrderDetail rows
 - **Excel Database**: Saves extracted orders to `Extracted_Orders.xlsx`
 - **Multiple Invoice Support**: Works with various invoice formats and templates
 
@@ -139,6 +141,13 @@ FLASK_PORT=5001
 CORS_ORIGINS=http://localhost:3000
 ```
 
+### Frontend Environment Variables (.env.local)
+
+```env
+# API Base URL (optional, defaults to localhost:5001)
+NEXT_PUBLIC_API_URL=http://localhost:5001
+```
+
 ## 🧪 Testing
 
 ### Test Backend Health
@@ -171,6 +180,12 @@ Key decisions:
 - GPT-4o Vision with Gemini fallback
 - SSE for real-time progress updates
 - shadcn/ui component library
+
+Also includes **Scaling Strategies** section covering:
+- Higher volume handling (queue-based processing)
+- Additional document types (POs, receipts, contracts)
+- Production database migration (PostgreSQL)
+- Cloud deployment (Kubernetes)
 
 ## 📝 License
 
