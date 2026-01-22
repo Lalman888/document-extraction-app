@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -258,9 +258,8 @@ export default function InvoicesPage() {
                     </TableRow>
                   ) : (
                     orders.map((order) => (
-                      <>
+                      <React.Fragment key={order.SalesOrderID}>
                         <TableRow 
-                          key={order.SalesOrderID} 
                           className="cursor-pointer hover:bg-muted/50"
                           onClick={() => fetchOrderDetails(order.SalesOrderID)}
                         >
@@ -349,7 +348,7 @@ export default function InvoicesPage() {
                             </TableCell>
                           </TableRow>
                         )}
-                      </>
+                      </React.Fragment>
                     ))
                   )}
                 </TableBody>

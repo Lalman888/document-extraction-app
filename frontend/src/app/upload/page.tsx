@@ -39,6 +39,7 @@ interface ExtractedData {
     tax_rate: number;
     tax_amount: number;
     shipping: number;
+    other?: number;
     total: number;
   };
 }
@@ -479,7 +480,8 @@ export default function UploadPage() {
               <div className="bg-muted/50 rounded-lg p-4 space-y-1.5 text-sm">
                 <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>${result.data.extraction.data.totals.subtotal.toFixed(2)}</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">Tax ({result.data.extraction.data.totals.tax_rate}%)</span><span>${result.data.extraction.data.totals.tax_amount.toFixed(2)}</span></div>
-                {result.data.extraction.data.totals.shipping > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Shipping</span><span>${result.data.extraction.data.totals.shipping.toFixed(2)}</span></div>}
+                <div className="flex justify-between"><span className="text-muted-foreground">S & H</span><span>{result.data.extraction.data.totals.shipping > 0 ? `$${result.data.extraction.data.totals.shipping.toFixed(2)}` : '-'}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Other</span><span>{(result.data.extraction.data.totals.other ?? 0) > 0 ? `$${(result.data.extraction.data.totals.other ?? 0).toFixed(2)}` : '-'}</span></div>
                 <Separator />
                 <div className="flex justify-between font-bold text-base pt-1"><span>Total</span><span>${result.data.extraction.data.totals.total.toFixed(2)}</span></div>
               </div>
@@ -558,7 +560,8 @@ export default function UploadPage() {
               <div className="bg-muted/50 rounded-lg p-4 space-y-2">
                 <div className="flex justify-between text-sm"><span>Subtotal</span><span className="font-medium">${editedData.totals.subtotal.toFixed(2)}</span></div>
                 <div className="flex justify-between text-sm"><span>Tax ({editedData.totals.tax_rate}%)</span><span className="font-medium">${editedData.totals.tax_amount.toFixed(2)}</span></div>
-                {editedData.totals.shipping > 0 && <div className="flex justify-between text-sm"><span>Shipping</span><span className="font-medium">${editedData.totals.shipping.toFixed(2)}</span></div>}
+                <div className="flex justify-between text-sm"><span>S & H</span><span className="font-medium">{editedData.totals.shipping > 0 ? `$${editedData.totals.shipping.toFixed(2)}` : '-'}</span></div>
+                <div className="flex justify-between text-sm"><span>Other</span><span className="font-medium">{(editedData.totals.other ?? 0) > 0 ? `$${(editedData.totals.other ?? 0).toFixed(2)}` : '-'}</span></div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg"><span>Total</span><span>${editedData.totals.total.toFixed(2)}</span></div>
               </div>

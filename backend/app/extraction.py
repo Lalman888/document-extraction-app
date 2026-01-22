@@ -73,6 +73,7 @@ USER_PROMPT = """Extract all data from this invoice image. Return this exact JSO
     "tax_rate": 0.00,
     "tax_amount": 0.00,
     "shipping": 0.00,
+    "other": 0.00,
     "total": 0.00
   },
   "additional_info": {
@@ -90,7 +91,14 @@ Rules:
 - Parse dates flexibly (M/D/YYYY, YYYY-MM-DD, etc.) and output as YYYY-MM-DD
 - Set confidence based on image clarity and extraction certainty (0.0-1.0)
 - If a field is unclear or missing, set to null
-- Ensure all numeric fields are actual numbers, not strings"""
+- Ensure all numeric fields are actual numbers, not strings
+
+CRITICAL - Tax Rate Precision:
+- Read the tax rate percentage EXACTLY as shown, including ALL decimal places (e.g., 6.875% must be 6.875, not 6.75 or 6.88)
+- Carefully examine every digit in percentage values - do not round or truncate
+- "S & H" or "S&H" should be read as the "shipping" field
+- "OTHER" should be read as the "other" field
+- If a value shows "-" or is blank, set it to 0.00"""
 
 
 # =============================================================================

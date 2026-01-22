@@ -298,12 +298,17 @@ class Database:
         Returns:
             New SalesOrderID
         """
-        # Get max ID from both files
-        ref_df = self._get_reference_sheet('orders')
+        # Get max ID from extracted file (always available)
         ext_df = self._get_extracted_sheet('extracted_orders', force_refresh=True)
-        
-        ref_max = int(ref_df['SalesOrderID'].max()) if not ref_df.empty else 0
         ext_max = int(ext_df['SalesOrderID'].max()) if not ext_df.empty and not ext_df['SalesOrderID'].isna().all() else 0
+        
+        # Try to get max from reference file (may not exist)
+        try:
+            ref_df = self._get_reference_sheet('orders')
+            ref_max = int(ref_df['SalesOrderID'].max()) if not ref_df.empty else 0
+        except FileNotFoundError:
+            # Reference file doesn't exist, use default starting ID
+            ref_max = 75000  # Start from a high number to avoid conflicts
         
         new_id = max(ref_max, ext_max) + 1
         order_data['SalesOrderID'] = new_id
@@ -335,12 +340,17 @@ class Database:
         Returns:
             List of new SalesOrderDetailIDs
         """
-        # Get max detail ID from both files
-        ref_df = self._get_reference_sheet('order_details')
+        # Get max detail ID from extracted file (always available)
         ext_df = self._get_extracted_sheet('extracted_details', force_refresh=True)
-        
-        ref_max = int(ref_df['SalesOrderDetailID'].max()) if not ref_df.empty else 0
         ext_max = int(ext_df['SalesOrderDetailID'].max()) if not ext_df.empty and not ext_df['SalesOrderDetailID'].isna().all() else 0
+        
+        # Try to get max from reference file (may not exist)
+        try:
+            ref_df = self._get_reference_sheet('order_details')
+            ref_max = int(ref_df['SalesOrderDetailID'].max()) if not ref_df.empty else 0
+        except FileNotFoundError:
+            # Reference file doesn't exist, use default starting ID
+            ref_max = 120000  # Start from a high number to avoid conflicts
         
         max_id = max(ref_max, ext_max)
         new_ids = []
@@ -387,12 +397,15 @@ class Database:
         Args:
             extracted_only: If True, return only extracted data counts
         """
-        ref_orders = len(self._get_reference_sheet('orders'))
-        ext_orders = len(self._get_extracted_sheet('extracted_orders'))
-        ref_details = len(self._get_reference_sheet('order_details'))
-        ext_details = len(self._get_extracted_sheet('extracted_details'))
-        
+        # Only load extracted data when extracted_only is True
         if extracted_only:
+            try:
+                ext_orders = len(self._get_extracted_sheet('extracted_orders'))
+                ext_details = len(self._get_extracted_sheet('extracted_details'))
+            except Exception:
+                ext_orders = 0
+                ext_details = 0
+            
             return {
                 'orders': ext_orders,
                 'order_details': ext_details,
@@ -404,14 +417,33 @@ class Database:
                 'extracted_exists': os.path.exists(self.extracted_path)
             }
         
+        # Load all data for full stats
+        try:
+            ref_orders = len(self._get_reference_sheet('orders'))
+            ref_details = len(self._get_reference_sheet('order_details'))
+            products = len(self._get_reference_sheet('products'))
+            customers = len(self._get_reference_sheet('customers'))
+        except FileNotFoundError:
+            ref_orders = 0
+            ref_details = 0
+            products = 0
+            customers = 0
+        
+        try:
+            ext_orders = len(self._get_extracted_sheet('extracted_orders'))
+            ext_details = len(self._get_extracted_sheet('extracted_details'))
+        except Exception:
+            ext_orders = 0
+            ext_details = 0
+        
         return {
             'orders': ref_orders + ext_orders,
             'reference_orders': ref_orders,
             'extracted_orders': ext_orders,
             'order_details': ref_details + ext_details,
             'extracted_order_details': ext_details,
-            'products': len(self._get_reference_sheet('products')),
-            'customers': len(self._get_reference_sheet('customers')),
+            'products': products,
+            'customers': customers,
             'reference_file': self.reference_path,
             'extracted_file': self.extracted_path,
             'reference_exists': os.path.exists(self.reference_path),
