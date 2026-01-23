@@ -401,6 +401,209 @@ export default function ADRPage() {
           ))}
         </div>
 
+        {/* System Design Deep Dive Section */}
+        <Separator className="my-12" />
+        
+        <h2 className="text-2xl font-bold mb-4">System Design Deep Dive</h2>
+        <p className="text-muted-foreground mb-6">
+          Core design patterns, data models, and engineering decisions that power the application.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* Data Model Card */}
+          <Card className="border-2 border-indigo-200 dark:border-indigo-900">
+            <CardHeader className="bg-indigo-50 dark:bg-indigo-950/20 pb-3">
+              <div className="flex items-center gap-2">
+                <Database className="h-5 w-5 text-indigo-600" />
+                <CardTitle className="text-lg">Data Model</CardTitle>
+              </div>
+              <CardDescription>Entity relationships and data flow</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <div className="space-y-4">
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-full p-3 rounded border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30">
+                      <div className="text-sm font-bold text-center text-indigo-700 dark:text-indigo-300">SalesOrderHeader</div>
+                      <div className="text-xs text-muted-foreground text-center mt-1">PK: SalesOrderID</div>
+                      <div className="flex flex-wrap gap-1 mt-2 justify-center">
+                        <Badge variant="outline" className="text-xs">OrderDate</Badge>
+                        <Badge variant="outline" className="text-xs">CustomerID</Badge>
+                        <Badge variant="outline" className="text-xs">TotalDue</Badge>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-px h-4 bg-muted-foreground"></div>
+                      <span className="text-xs text-muted-foreground">1:N</span>
+                      <div className="w-px h-4 bg-muted-foreground"></div>
+                    </div>
+                    <div className="w-full p-3 rounded border-2 border-green-500 bg-green-50 dark:bg-green-950/30">
+                      <div className="text-sm font-bold text-center text-green-700 dark:text-green-300">SalesOrderDetail</div>
+                      <div className="text-xs text-muted-foreground text-center mt-1">PK: DetailID, FK: SalesOrderID</div>
+                      <div className="flex flex-wrap gap-1 mt-2 justify-center">
+                        <Badge variant="outline" className="text-xs">ProductID</Badge>
+                        <Badge variant="outline" className="text-xs">Qty</Badge>
+                        <Badge variant="outline" className="text-xs">UnitPrice</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 rounded bg-blue-50 dark:bg-blue-950/30 border border-blue-200">
+                    <span className="font-medium">Reference Data</span>
+                    <div className="text-muted-foreground">Products, Customers (read-only)</div>
+                  </div>
+                  <div className="p-2 rounded bg-orange-50 dark:bg-orange-950/30 border border-orange-200">
+                    <span className="font-medium">Extracted Data</span>
+                    <div className="text-muted-foreground">New orders (read/write)</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* API Design Card */}
+          <Card className="border-2 border-cyan-200 dark:border-cyan-900">
+            <CardHeader className="bg-cyan-50 dark:bg-cyan-950/20 pb-3">
+              <div className="flex items-center gap-2">
+                <Server className="h-5 w-5 text-cyan-600" />
+                <CardTitle className="text-lg">API Design</CardTitle>
+              </div>
+              <CardDescription>RESTful patterns and conventions</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-muted-foreground">ENDPOINTS</div>
+                <div className="space-y-1.5 font-mono text-xs">
+                  <div className="flex items-center gap-2 p-1.5 rounded bg-muted/50">
+                    <Badge className="bg-green-600 text-xs">GET</Badge>
+                    <span>/api/database/orders</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-1.5 rounded bg-muted/50">
+                    <Badge className="bg-blue-600 text-xs">POST</Badge>
+                    <span>/api/invoices/upload-stream</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-1.5 rounded bg-muted/50">
+                    <Badge className="bg-blue-600 text-xs">POST</Badge>
+                    <span>/api/invoices/save-edited</span>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-muted-foreground">RESPONSE FORMAT</div>
+                <div className="p-2 rounded bg-muted/50 font-mono text-xs">
+                  <div className="text-green-600">{`{ "success": true,`}</div>
+                  <div className="pl-2">{`"data": {...},`}</div>
+                  <div className="pl-2">{`"meta": { "response_time_ms" } }`}</div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-muted-foreground">ERROR HANDLING</div>
+                <div className="p-2 rounded bg-red-50 dark:bg-red-950/30 font-mono text-xs border border-red-200">
+                  <div className="text-red-600">{`{ "success": false,`}</div>
+                  <div className="pl-2">{`"error": { "code", "message" } }`}</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security Card */}
+          <Card className="border-2 border-rose-200 dark:border-rose-900">
+            <CardHeader className="bg-rose-50 dark:bg-rose-950/20 pb-3">
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-rose-600" />
+                <CardTitle className="text-lg">Security</CardTitle>
+              </div>
+              <CardDescription>Current measures and future improvements</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-green-600">✓ IMPLEMENTED</div>
+                <div className="space-y-1.5">
+                  <div className="flex items-start gap-2 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                    <span><strong>API Keys</strong> via environment variables</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                    <span><strong>File validation</strong> (type, size limits)</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                    <span><strong>CORS</strong> configured origins</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                    <span><strong>Input sanitization</strong> for DB writes</span>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-muted-foreground">○ FUTURE</div>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <div>• JWT authentication</div>
+                  <div>• Rate limiting per API key</div>
+                  <div>• Encryption at rest</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Reliability Card */}
+          <Card className="border-2 border-emerald-200 dark:border-emerald-900">
+            <CardHeader className="bg-emerald-50 dark:bg-emerald-950/20 pb-3">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-emerald-600" />
+                <CardTitle className="text-lg">Reliability</CardTitle>
+              </div>
+              <CardDescription>Fault tolerance and error recovery</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-muted-foreground">LLM FAILOVER</div>
+                <div className="flex items-center justify-center gap-2 p-3 rounded bg-muted/50">
+                  <div className="p-2 rounded bg-purple-100 dark:bg-purple-900/30 border text-center">
+                    <Brain className="h-4 w-4 text-purple-600 mx-auto" />
+                    <div className="text-xs mt-1">GPT-4o</div>
+                    <Badge variant="secondary" className="text-xs mt-1">Primary</Badge>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-xs text-red-500">fail?</span>
+                  </div>
+                  <div className="p-2 rounded bg-blue-100 dark:bg-blue-900/30 border text-center">
+                    <Brain className="h-4 w-4 text-blue-600 mx-auto" />
+                    <div className="text-xs mt-1">Gemini</div>
+                    <Badge variant="outline" className="text-xs mt-1">Fallback</Badge>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-xs font-medium text-muted-foreground">VALIDATION PIPELINE</div>
+                <div className="flex flex-wrap gap-1.5">
+                  <Badge variant="outline" className="bg-yellow-50">Confidence</Badge>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <Badge variant="outline" className="bg-green-50">Math Check</Badge>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <Badge variant="outline" className="bg-blue-50">Review</Badge>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <Badge variant="outline" className="bg-purple-50">Save</Badge>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <div className="flex items-center gap-1">
+                  <CheckCircle2 className="h-3 w-3 text-green-600" />
+                  Graceful error messages for all failure modes
+                </div>
+                <div className="flex items-center gap-1">
+                  <CheckCircle2 className="h-3 w-3 text-green-600" />
+                  No data loss on extraction failure
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Scaling Strategies Section */}
         <Separator className="my-12" />
         
